@@ -1,15 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMedicineDto } from './dto/create-medicine.dto';
 import { UpdateMedicineDto } from './dto/update-medicine.dto';
+import { InjectModel } from '@nestjs/sequelize';
+import { Medicine } from './medicine.model';
 
 @Injectable()
 export class MedicineService {
-    create(createMedicineDto: CreateMedicineDto) {
-        return 'This action adds a new medicine';
+    constructor(
+        @InjectModel(Medicine)
+        private medicineRepository: typeof Medicine,
+    ) {}
+    async create(createMedicineDto: CreateMedicineDto) {
+        const medicine = await this.medicineRepository.create(
+            createMedicineDto,
+        );
+        return medicine;
     }
 
-    findAll() {
-        return `This action returns all medicine`;
+    async findAll() {
+        const medicine = this.medicineRepository.findAll();
+        return medicine;
     }
 
     findOne(id: number) {
